@@ -5,6 +5,10 @@ on:
     - cron: '0 9 * * *'  # 9 AM UTC daily
   workflow_dispatch:  # allow manual trigger
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   remind:
     runs-on: ubuntu-latest
