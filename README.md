@@ -6,44 +6,43 @@
 
 🔗 **Live:** https://factspark23-hash.github.io/proofkit/
 
+---
+
 ## What It Does
 
 **1. Social Proof Notifications**
-Show "Sarah from NYC just purchased Pro Plan" popups on your website. Build trust instantly.
+Show "Sarah from NYC just purchased Pro Plan" popups on your website.
 
 **2. Testimonial Collection**
-Send a link → customers submit reviews → you approve them → they show on your site.
+Send a link → customers submit reviews → you approve → they display on your site.
 
 **3. One-Line Embed**
 ```html
 <script src="https://proofkit.dev/widget/YOUR_ID.js"></script>
 ```
 
-## Why $9/mo?
+---
 
-| Tool | Price |
-|------|-------|
-| Proof.com | $29/mo |
-| FOMO | $25/mo |
-| Senja | $29/mo |
-| **ProofKit** | **$9/mo** |
+## Pricing
 
-Same features. Third of the price.
+| | Free | $9/mo |
+|---|---|---|
+| Testimonials | 5 max | Unlimited |
+| Social proof events | ✅ | ✅ |
+| Branding | "Powered by ProofKit" | Removed |
 
-## How It Works
+---
 
-1. **Create** a widget in the dashboard
-2. **Collect** testimonials via a shareable link
-3. **Add** social proof events (manually or via API)
-4. **Embed** on your site with one line of code
-5. **Conversions go up**
+## Competitor Comparison
 
-## Tech Stack
+| Tool | Price | Features |
+|------|-------|----------|
+| Proof.com | $29/mo | Social proof |
+| FOMO | $25/mo | Social proof |
+| Senja | $29/mo | Testimonials |
+| **ProofKit** | **$9/mo** | **Both** |
 
-- React 19
-- Vite
-- Pure client-side (no server needed)
-- localStorage for data (upgrade to Supabase for production)
+---
 
 ## Run Locally
 
@@ -54,7 +53,13 @@ npm run dev
 
 ## Deploy
 
-Pushes to `main` auto-deploy to GitHub Pages via GitHub Actions.
+Pushes to `main` auto-deploy to GitHub Pages.
+
+## Promotion
+
+See [PROMO.md](PROMO.md) for ready-to-post content across HackerNews, Product Hunt, Reddit, and Twitter.
+
+Daily promotion reminders are automated via GitHub Actions — you'll get an issue every morning with today's task.
 
 ## License
 

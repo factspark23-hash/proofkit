@@ -1,0 +1,45 @@
+name: Daily Promotion Reminder
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 9 AM UTC daily
+  workflow_dispatch:  # allow manual trigger
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get day number
+        id: day
+        run: |
+          START="2026-04-22"
+          TODAY=$(date +%Y-%m-%d)
+          DAYS=$(( ($(date -d "$TODAY" +%s) - $(date -d "$START" +%s)) / 86400 + 1 ))
+          echo "day=$DAYS" >> $GITHUB_OUTPUT
+
+      - name: Create promotion issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const day = parseInt('${{ steps.day.outputs.day }}');
+            const tasks = {
+              1: { platform: 'HackerNews', title: '🚀 Launch on HackerNews', body: 'Post: "Show HN: ProofKit – Social proof for $9/mo"\n\nGo to: https://news.ycombinator.com/submit\nURL: https://factspark23-hash.github.io/proofkit/\n\nFull copy: see PROMO.md Day 1' },
+              2: { platform: 'Product Hunt', title: '🚀 Launch on Product Hunt', body: 'Go to: https://www.producthunt.com/posts/new\n\nFull copy: see PROMO.md Day 2' },
+              3: { platform: 'Reddit r/SaaS', title: '📢 Post on r/SaaS', body: 'Go to: https://reddit.com/r/SaaS/submit\n\nFull copy: see PROMO.md Day 3' },
+              4: { platform: 'Reddit r/Entrepreneur', title: '📢 Post on r/Entrepreneur', body: 'Go to: https://reddit.com/r/Entrepreneur/submit\n\nFull copy: see PROMO.md Day 4' },
+              5: { platform: 'Reddit r/webdev', title: '📢 Post on r/webdev', body: 'Go to: https://reddit.com/r/webdev/submit\n\nFull copy: see PROMO.md Day 5' },
+              6: { platform: 'Twitter', title: '🐦 Post Twitter thread', body: 'Full thread copy: see PROMO.md Day 6' },
+              7: { platform: 'Reddit r/smallbusiness', title: '📢 Post on r/smallbusiness', body: 'Go to: https://reddit.com/r/smallbusiness/submit\n\nFull copy: see PROMO.md Day 7' },
+            };
+
+            const task = tasks[((day - 1) % 7) + 1] || tasks[1];
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Day ${day}: ${task.title}`,
+              body: `## 📅 Day ${day} Promotion Task\n\n**Platform:** ${task.platform}\n\n${task.body}\n\n---\n\n**After posting, check these:**\n- [ ] Post is live\n- [ ] Reply to first 5 comments\n- [ ] Track upvotes/clicks in PROMO.md\n\n**Yesterday's results:** Check the last issue for engagement numbers.`,
+              labels: ['promotion']
+            });
