@@ -1,0 +1,277 @@
+{
+  "name": "ProofKit Auto Promotion",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily 9AM Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rotate through platforms daily\nconst startDate = new Date('2026-04-22');\nconst today = new Date();\nconst dayNumber = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;\nconst dayOfWeek = ((dayNumber - 1) % 7) + 1;\n\nconst campaigns = {\n  1: {\n    platform: 'hackernews',\n    title: 'Show HN: ProofKit – Social proof notifications for $9/mo (Proof.com alternative)',\n    url: 'https://news.ycombinator.com/submit',\n    content: `Proof.com charges $29/mo for a popup that says \"someone just purchased.\"\nThe technology is trivial. The pricing isn't.\n\nSo I built the same thing for $9/mo, plus testimonial collection built in.\n\n- One-line JavaScript embed\n- Animated social proof notifications  \n- Testimonial collection via shareable link\n- Public testimonial wall\n- Free tier (5 testimonials, no card required)\n\nWhy $9/mo? Because small businesses shouldn't pay enterprise prices for a popup widget.\n\nWould love feedback from HN — what would make you actually use this?`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  2: {\n    platform: 'producthunt',\n    title: 'Social proof notifications + testimonials for 70% less',\n    url: 'https://www.producthunt.com/posts/new',\n    content: `Hey PH! 👋\n\nI was frustrated paying $29/mo for Proof.com to show \"someone just bought\" popups.\nThe widget is maybe 200 lines of JavaScript. The pricing is insane.\n\nSo I built ProofKit:\n- Same social proof notifications\n- Testimonial collection built in (others charge separately)\n- $9/mo instead of $29\n\nWould love your feedback. What feature would make you switch?`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  3: {\n    platform: 'reddit',\n    subreddit: 'SaaS',\n    title: 'I built a Proof.com alternative for $9/mo — roast my pricing',\n    content: `Proof.com makes $250K/mo showing \"someone just purchased\" popups.\nI built the same thing + testimonial collection for $9/mo.\n\nFree tier available: https://factspark23-hash.github.io/proofkit/\n\nHonest question: is $9/mo too cheap? Should I charge more?\nOr is the market too crowded to bother?\n\nRoast away.`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  4: {\n    platform: 'reddit',\n    subreddit: 'Entrepreneur',\n    title: 'The $9 social proof tool that replaces Proof.com + Senja',\n    content: `Every landing page needs social proof. Every business needs testimonials.\nExisting tools charge $25-29/mo for each.\n\nI built ProofKit — both in one tool for $9/mo.\n\nWhat it does:\n1. Shows \"Sarah just purchased\" notifications on your site\n2. Collects testimonials via a shareable link\n3. Displays them on a public wall\n4. One-line embed, works on any site\n\nFree tier included. Would love feedback from fellow entrepreneurs.`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  5: {\n    platform: 'reddit',\n    subreddit: 'webdev',\n    title: 'Open-sourced: social proof notification widget in React',\n    content: `Built a social proof + testimonial widget as a single-page React app.\nDeploys to GitHub Pages for free. No server needed.\n\nTech: React 19 + Vite + localStorage (upgrade to Supabase for production)\n\nSource: https://github.com/factspark23-hash/proofkit\nLive: https://factspark23-hash.github.io/proofkit/\n\nFeedback welcome on the code/architecture.`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  6: {\n    platform: 'twitter',\n    tweets: [\n      'Proof.com makes $250K/mo showing \"someone just bought\" popups.\\n\\nThe technology is trivial. The pricing isn\\'t.\\n\\nSo I built the same thing for $9/mo.\\n\\nHere\\'s how 👇',\n      'One line of code. Animated notifications. Custom branding.\\n\\nPlus: testimonial collection built in. Proof.com charges extra for that.',\n      'Why $9/mo?\\n\\nSmall businesses can\\'t justify $29/mo for a popup widget.\\nThe infra cost is near zero.\\nI\\'d rather have 1,000 happy customers at $9 than 100 at $29.',\n      'Live now: https://factspark23-hash.github.io/proofkit/\\n\\nFree tier: 5 testimonials + social proof. No card required.\\n\\nIf you run a SaaS or landing page — try it. Takes 3 minutes.'\n    ],\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  },\n  7: {\n    platform: 'reddit',\n    subreddit: 'smallbusiness',\n    title: 'Free social proof tool for small business websites',\n    content: `If you have a website, you need social proof — those \"someone just purchased\" notifications that build trust.\n\nMost tools cost $25-30/month, which is crazy for a small business.\n\nI built a free alternative: https://factspark23-hash.github.io/proofkit/\n\nFree tier includes:\n- Social proof notifications\n- Testimonial collection (send a link to happy customers)\n- Public testimonial wall\n- One-line embed for any website\n\nPaid plan is $9/mo if you need more than 5 testimonials.\n\nFeedback welcome!`,\n    link: 'https://factspark23-hash.github.io/proofkit/'\n  }\n};\n\nconst campaign = campaigns[dayOfWeek];\n\nreturn [{\n  json: {\n    dayNumber,\n    dayOfWeek,\n    ...campaign\n  }\n}];"
+      },
+      "id": "content-generator",
+      "name": "Generate Today Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "reddit-check",
+              "leftValue": "={{ $json.platform }}",
+              "rightValue": "reddit",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "is-reddit",
+      "name": "Is Reddit?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [440, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://oauth.reddit.com/api/submit",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "redditOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"sr\": \"{{ $json.subreddit }}\",\n  \"kind\": \"self\",\n  \"title\": \"{{ $json.title }}\",\n  \"text\": \"{{ $json.content }}\",\n  \"url\": \"{{ $json.link }}\"\n}",
+        "options": {}
+      },
+      "id": "post-reddit",
+      "name": "Post to Reddit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -200],
+      "credentials": {
+        "redditOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Reddit OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "twitter-check",
+              "leftValue": "={{ $json.platform }}",
+              "rightValue": "twitter",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "is-twitter",
+      "name": "Is Twitter?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twitter.com/2/tweets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"{{ $json.tweets[0] }}\"\n}",
+        "options": {}
+      },
+      "id": "post-twitter-1",
+      "name": "Post Tweet 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, -100],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Twitter OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/repos/factspark23-hash/proofkit/issues",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"Day {{ $json.dayNumber }}: Auto-posted to {{ $json.platform }}\",\n  \"body\": \"## 📅 Day {{ $json.dayNumber }} Promotion Log\\n\\n**Platform:** {{ $json.platform }}\\n**Title:** {{ $json.title }}\\n**Status:** ✅ Posted automatically\\n\\n### Content:\\n{{ $json.content }}\\n\\n### Links:\\n- Live site: https://factspark23-hash.github.io/proofkit/\\n- GitHub: https://github.com/factspark23-hash/proofkit\"\n}",
+        "options": {}
+      },
+      "id": "log-github",
+      "name": "Log to GitHub Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 100],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_WITH_CHAT_ID",
+        "text": "=🚀 ProofKit Promo Day {{ $json.dayNumber }}\n\nPlatform: {{ $json.platform }}\nTitle: {{ $json.title }}\n\n{{ $json.content }}\n\n🔗 https://factspark23-hash.github.io/proofkit/",
+        "additionalFields": {}
+      },
+      "id": "notify-telegram",
+      "name": "Notify via Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1100, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "postUrl",
+              "value": "={{ $json.url || 'Check platform manually' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "merge-result",
+      "name": "Merge Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 100]
+    }
+  ],
+  "connections": {
+    "Daily 9AM Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Today Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Today Content": {
+      "main": [
+        [
+          {
+            "node": "Is Reddit?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Twitter?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log to GitHub Issue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify via Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Reddit?": {
+      "main": [
+        [
+          {
+            "node": "Post to Reddit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Is Twitter?": {
+      "main": [
+        [
+          {
+            "node": "Post Tweet 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "automation",
+      "id": "1"
+    },
+    {
+      "name": "marketing",
+      "id": "2"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-22T01:25:00.000Z",
+  "versionId": "1"
+}

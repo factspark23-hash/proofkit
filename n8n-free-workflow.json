@@ -1,0 +1,129 @@
+{
+  "name": "ProofKit Auto Promotion (Free Tier)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Daily 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const startDate = new Date('2026-04-22');\nconst today = new Date();\nconst dayNumber = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;\nconst dayOfWeek = ((dayNumber - 1) % 7) + 1;\n\nconst posts = {\n  1: {\n    platform: 'HackerNews',\n    title: 'Show HN: ProofKit – Social proof notifications for $9/mo',\n    postUrl: 'https://news.ycombinator.com/submit',\n    copyPaste: `Proof.com charges $29/mo for a popup that says \"someone just purchased.\"\nThe technology is trivial. The pricing isn't.\n\nSo I built the same thing for $9/mo, plus testimonial collection built in.\n\n• One-line JavaScript embed\n• Animated social proof notifications\n• Testimonial collection via shareable link\n• Public testimonial wall\n• Free tier (5 testimonials, no card required)\n\nWhy $9/mo? Because small businesses shouldn't pay enterprise prices for a popup widget.\n\nTry it: https://factspark23-hash.github.io/proofkit/\n\nWould love feedback — what would make you actually use this?`\n  },\n  2: {\n    platform: 'Product Hunt',\n    title: 'Launch on Product Hunt',\n    postUrl: 'https://www.producthunt.com/posts/new',\n    copyPaste: `Hey PH! 👋\n\nI was frustrated paying $29/mo for Proof.com to show \"someone just bought\" popups.\n\nSo I built ProofKit:\n• Same social proof notifications\n• Testimonial collection built in\n• $9/mo instead of $29\n\nTry it: https://factspark23-hash.github.io/proofkit/`\n  },\n  3: {\n    platform: 'Reddit r/SaaS',\n    title: 'I built a Proof.com alternative for $9/mo',\n    postUrl: 'https://www.reddit.com/r/SaaS/submit',\n    copyPaste: `Proof.com makes $250K/mo showing \"someone just purchased\" popups.\nI built the same thing + testimonial collection for $9/mo.\n\nFree tier: https://factspark23-hash.github.io/proofkit/\n\nIs $9/mo too cheap? Too crowded a market? Roast away.`\n  },\n  4: {\n    platform: 'Reddit r/Entrepreneur',\n    title: 'The $9 social proof tool replacing Proof.com + Senja',\n    postUrl: 'https://www.reddit.com/r/Entrepreneur/submit',\n    copyPaste: `Every landing page needs social proof. Existing tools charge $25-29/mo.\n\nI built ProofKit — social proof + testimonials in one tool for $9/mo.\n\n1. \"Sarah just purchased\" notifications\n2. Testimonial collection via shareable link\n3. Public testimonial wall\n4. One-line embed\n\nFree tier included: https://factspark23-hash.github.io/proofkit/`\n  },\n  5: {\n    platform: 'Reddit r/webdev',\n    title: 'Open-sourced: social proof widget in React',\n    postUrl: 'https://www.reddit.com/r/webdev/submit',\n    copyPaste: `Built a social proof + testimonial widget in React. Deploys to GitHub Pages for free.\n\nTech: React 19 + Vite + localStorage\n\nSource: https://github.com/factspark23-hash/proofkit\nLive: https://factspark23-hash.github.io/proofkit/`\n  },\n  6: {\n    platform: 'Twitter/X',\n    title: 'Post thread about ProofKit',\n    postUrl: 'https://twitter.com/compose/tweet',\n    copyPaste: `Tweet 1:\nProof.com makes $250K/mo showing \"someone just bought\" popups.\nThe technology is trivial. The pricing isn't.\nSo I built the same thing for $9/mo. 👇\n\nTweet 2:\nOne line of code. Animated notifications. Custom branding.\nPlus: testimonial collection built in. Proof.com charges extra for that.\n\nTweet 3:\nWhy $9/mo?\nSmall businesses can't justify $29/mo for a popup widget.\nI'd rather have 1,000 happy customers at $9 than 100 at $29.\n\nTweet 4:\nLive: https://factspark23-hash.github.io/proofkit/\nFree tier: 5 testimonials + social proof. No card required.`\n  },\n  7: {\n    platform: 'Reddit r/smallbusiness',\n    title: 'Free social proof tool for small business',\n    postUrl: 'https://www.reddit.com/r/smallbusiness/submit',\n    copyPaste: `If you have a website, you need social proof. Most tools cost $25-30/month.\n\nI built a free alternative: https://factspark23-hash.github.io/proofkit/\n\nFree tier:\n• Social proof notifications\n• Testimonial collection\n• Public testimonial wall\n• One-line embed\n\nPaid plan is $9/mo for unlimited testimonials.`\n  }\n};\n\nconst post = posts[dayOfWeek];\n\nreturn [{\n  json: {\n    dayNumber,\n    dayOfWeek,\n    platform: post.platform,\n    title: post.title,\n    postUrl: post.postUrl,\n    copyPaste: post.copyPaste,\n    liveUrl: 'https://factspark23-hash.github.io/proofkit/',\n    repoUrl: 'https://github.com/factspark23-hash/proofkit'\n  }\n}];"
+      },
+      "id": "generate",
+      "name": "Generate Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/repos/factspark23-hash/proofkit/issues",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"Day {{ $json.dayNumber }}: {{ $json.title }}\",\n  \"body\": \"## 📅 Day {{ $json.dayNumber }} — {{ $json.platform }}\\n\\n### ✂️ Copy this and post:\\n\\n**Go to:** {{ $json.postUrl }}\\n\\n---\\n\\n```\\n{{ $json.copyPaste }}\\n```\\n\\n---\\n\\n**After posting:**\\n- [ ] Post is live\\n- [ ] Reply to first 5 comments\\n- [ ] Track engagement\\n\\n**Links:**\\n- Live: {{ $json.liveUrl }}\\n- Repo: {{ $json.repoUrl }}\",\n  \"labels\": [\"promotion\"]\n}",
+        "options": {}
+      },
+      "id": "github-issue",
+      "name": "Create GitHub Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -100],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_WITH_CHAT_ID",
+        "text": "=🚀 *ProofKit Promo — Day {{ $json.dayNumber }}*\n\n*Platform:* {{ $json.platform }}\n*Action:* {{ $json.title }}\n\n📋 *Copy-paste this:*\n\n{{ $json.copyPaste }}\n\n🔗 Post here: {{ $json.postUrl }}\n🌐 Live site: {{ $json.liveUrl }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram",
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [440, 100],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "REPLACE_WITH_EMAIL",
+        "subject": "=🚀 ProofKit Promo Day {{ $json.dayNumber }}: {{ $json.platform }}",
+        "emailType": "text",
+        "message": "=🚀 PROOFKIT PROMOTION — DAY {{ $json.dayNumber }}\n\nPlatform: {{ $json.platform }}\nAction: {{ $json.title }}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\nCOPY THIS AND POST:\n\n{{ $json.copyPaste }}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPost here: {{ $json.postUrl }}\nLive site: {{ $json.liveUrl }}\nRepo: {{ $json.repoUrl }}\n\nAfter posting:\n✅ Check post is live\n✅ Reply to first 5 comments\n✅ Track upvotes/engagement",
+        "options": {}
+      },
+      "id": "email",
+      "name": "Email Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [440, 300],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Daily 9AM": {
+      "main": [
+        [
+          { "node": "Generate Content", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Generate Content": {
+      "main": [
+        [
+          { "node": "Create GitHub Issue", "type": "main", "index": 0 },
+          { "node": "Telegram Notification", "type": "main", "index": 0 },
+          { "node": "Email Notification", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "automation" },
+    { "name": "marketing" }
+  ]
+}
